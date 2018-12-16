@@ -26,7 +26,7 @@ get_utr_lengths = function(utr_bed_file) {
         tx_ids = bed_records$tx_id %>% unique
 
         utr_lengths = purrr::map(tx_ids, get_utr_lengths)
-        utr_lengths = plyr::ldply(utr_lengths, data.frame) %>% as.tibble()
+        utr_lengths = plyr::ldply(utr_lengths, data.frame) %>% tibble::as.tibble()
 
         return (utr_lengths)
 }

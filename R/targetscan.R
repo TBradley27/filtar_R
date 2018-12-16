@@ -58,7 +58,7 @@ get_mirna_family = function(mirna_seeds, species) {
 
         mirna_seeds = purrr::map(unique_seeds, delete_mirs_without_reference)
 
-        mirna_seeds = plyr::ldply(mirna_seeds, data.frame) %>% as.tibble()
+        mirna_seeds = plyr::ldply(mirna_seeds, data.frame) %>% tibble::as.tibble()
 
         print(mirna_seeds)
 
@@ -109,7 +109,7 @@ return(test)
 
 get_AIR_file = function(APA_file,UTR_lengths_file) {
 	APAtrap_output = read.table(APA_file, sep="\t",
-				    header=TRUE) %>% as.tibble()
+				    header=TRUE) %>% tibble::as.tibble()
 
 	#APAtrap_output = APAtrap_output[1:1268,] # remove incomplete rows - I have no idea what this line is for
 
@@ -263,7 +263,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	  return (records)
 	}
 
-	APA_records = purrr::map(tx_ids, get_rel_APA_position) %>% plyr::ldply(data.frame) %>% as.tibble
+	APA_records = purrr::map(tx_ids, get_rel_APA_position) %>% plyr::ldply(data.frame) %>% tibble::as.tibble
 
 	all_transcripts = readr::read_tsv(UTR_lengths_file, col_names=TRUE)
 

@@ -94,7 +94,7 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	old_records_changed = purrr::map(tx_ids, reannotate)
 
-	old_records_changed = plyr::ldply(old_records_changed, data.frame) %>% as.tibble()
+	old_records_changed = plyr::ldply(old_records_changed, data.frame) %>% tibble::as.tibble()
 
 	print('old records changed')
 	old_records_changed %>% select(id) %>% table() %>% print()
@@ -161,7 +161,7 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	full_set_sorted = purrr::map(tx_IDs, reorder_bed_files)
 	print(full_set_sorted[1:30])
-	full_set_sorted = plyr::ldply(full_set_sorted, data.frame) %>% as.tibble()
+	full_set_sorted = plyr::ldply(full_set_sorted, data.frame) %>% tibble::as.tibble()
 	print(full_set_sorted[1:200,], n=Inf)
 
 	return(full_set_sorted)
