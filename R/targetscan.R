@@ -6,7 +6,7 @@
 
 get_mirna_family = function(mirna_seeds, species) {
 
-        mirna_seeds = read_tsv(mirna_seeds, col_names=c("identifier", "seq"))
+        mirna_seeds = readr::read_tsv(mirna_seeds, col_names=c("identifier", "seq"))
 
         # group miRNA families together
         mirna_seeds = mirna_seeds[order(mirna_seeds$seq),]
@@ -34,7 +34,7 @@ get_mirna_family = function(mirna_seeds, species) {
 
         mirna_seeds = mirna_seeds[mirna_seeds$species %in% names(TaxID),]
 
-        mirna_seeds$tax_id = map(mirna_seeds$species, map_ids)
+        mirna_seeds$tax_id = purrr::map(mirna_seeds$species, map_ids)
         mirna_seeds$species = NULL
 
         mirna_seeds$tax_id = as.character(mirna_seeds$tax_id)
@@ -45,7 +45,7 @@ get_mirna_family = function(mirna_seeds, species) {
 
 	delete_mirs_without_reference = function(string) {
 
-	x = filter(mirna_seeds, seq == string)
+	x = dplyr::filter(mirna_seeds, seq == string)
 
 	if (TaxID[[species]] %in% x$tax_id) {
 		return (x)
@@ -56,9 +56,9 @@ get_mirna_family = function(mirna_seeds, species) {
 	}
 	}
 
-        mirna_seeds = map(unique_seeds, delete_mirs_without_reference)
+        mirna_seeds = purrr::map(unique_seeds, delete_mirs_without_reference)
 
-        mirna_seeds = ldply(mirna_seeds, data.frame) %>% as.tibble()
+        mirna_seeds = plyr::ldply(mirna_seeds, data.frame) %>% as.tibble()
 
         print(mirna_seeds)
 
@@ -85,10 +85,10 @@ get_mirna_context = function (mirna_seed_file, mature_mirnas_file, species) {
 
 	specific_tax_id = TaxID[[species]]
 
-	mirna_seeds = read_tsv(mirna_seed_file, col_names=c("identifier", "seq", "tax_id"))
+	mirna_seeds = readr::read_tsv(mirna_seed_file, col_names=c("identifier", "seq", "tax_id"))
 	print(mirna_seeds)
 
-	mirnas = read_tsv(mature_mirnas_file, col_names = c('miRNA_family','tax_id','miRNA','miRNA_sequence'))
+	mirnas = readr::read_tsv(mature_mirnas_file, col_names = c('miRNA_family','tax_id','miRNA','miRNA_sequence'))
 	print(mirnas)
 	mirnas$seed = stringr::str_sub(mirnas$miRNA_sequence, 2, 8)
 
@@ -115,7 +115,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 
 	reposition_last_APA_site = function (APA_df) {
 	  
-	 APA_df$strand = str_sub(APA_df$Gene, -1, -1) # retrieve the last character in the column which is the transcript strand
+	 APA_df$strand = stringr::str_sub(APA_df$Gene, -1, -1) # retrieve the last character in the column which is the transcript strand
 	 APA_df$last_APA = ''                         # create space for the last APA position
 	 APA_df$start_pos = ''                        # create space for what I assume is the transcript start position
 	  
@@ -136,7 +136,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	      
 	    }
 	  }
-	  APA_df$Predicted_APA = str_glue_data(APA_df,"{Predicted_APA},{last_APA}") # collect all APA sites together
+	  APA_df$Predicted_APA = stringr::str_glue_data(APA_df,"{Predicted_APA},{last_APA}") # collect all APA sites together
 	  
 	  # clean up
 	  APA_df$last_APA = NULL
@@ -155,11 +155,11 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	# I think this function is to remove APA sites with a quoted abundance of 0.00 which in effect would mean that they are redundant - probably initially identified because they have the correct motif
 
 	remove_unused_APAsites = function (APA_df) {
-	  converted_exp_column = map(APA_df$Group_1_1_Separate_Exp, function (x)
-	    str_split(x, ',') %>% unlist %>% as.numeric) # convert to numerical vector
+	  converted_exp_column = purrr::map(APA_df$Group_1_1_Separate_Exp, function (x)
+	    stringr::str_split(x, ',') %>% unlist %>% as.numeric) # convert to numerical vector
 	  
-	  converted_loci_column = map(APA_df$Predicted_APA, function (x)
-	    str_split(x, ',') %>% unlist) # convert to numerical vector
+	  converted_loci_column = purrr::map(APA_df$Predicted_APA, function (x)
+	    stringr::str_split(x, ',') %>% unlist) # convert to numerical vector
 	  
 	  for (i in 1:length(converted_exp_column)) { # loops over each row of the data frame
 	    index = converted_exp_column[[i]] != 0 # A Boolean vector
@@ -263,18 +263,18 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	  return (records)
 	}
 
-	APA_records = map(tx_ids, get_rel_APA_position) %>% plyr::ldply(data.frame) %>% as.tibble
+	APA_records = purrr::map(tx_ids, get_rel_APA_position) %>% plyr::ldply(data.frame) %>% as.tibble
 
-	all_transcripts = read_tsv(UTR_lengths_file, col_names=TRUE)
+	all_transcripts = readr::read_tsv(UTR_lengths_file, col_names=TRUE)
 
 	# add version numbers to all APA records
 
-	all_transcripts_sep = separate(all_transcripts, tx_id, into=c('tx_id','version'))
+	all_transcripts_sep = tidyr::separate(all_transcripts, tx_id, into=c('tx_id','version'))
 	print(all_transcripts)
 	APA_records = merge(APA_records,all_transcripts_sep,by.x='id',by.y='tx_id')
 	APA_records$utr_length = NULL
 	print(APA_records)
-	APA_records = unite(APA_records, col='id', c('id','version'), sep=".")	
+	APA_records = tidyr::unite(APA_records, col='id', c('id','version'), sep=".")	
 	print(APA_records)
 	non_updated_tx = all_transcripts[!all_transcripts$tx_id %in% APA_records$id,]
 	print(non_updated_tx)
@@ -297,7 +297,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 
 fix_ts_output = function (ts_sites_output) {
 
-        ts_sites = read_tsv(ts_sites_output)
+        ts_sites = readr::read_tsv(ts_sites_output)
 
         sort_species = function (string) {
           if (grepl(' ', string)) {

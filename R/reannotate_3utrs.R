@@ -25,15 +25,15 @@
 get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_file) {
 
 	# read in the data
-	normal_bed = read_tsv(normal_bed_file, col_names=c('chromosome','start','stop','strand','id'), col_types=list('c','i','i','c','c'))
-	extended_utrs = read_tsv(extended_bed_file, col_names=c('chromosome','start','stop','id','dummy','strand'))
+	normal_bed = readr::read_tsv(normal_bed_file, col_names=c('chromosome','start','stop','strand','id'), col_types=list('c','i','i','c','c'))
+	extended_utrs = readr::read_tsv(extended_bed_file, col_names=c('chromosome','start','stop','id','dummy','strand'))
 
 	print('bar')
 
 	# tidy the data
-	normal_bed = separate(normal_bed, id, into=c('id','version'))
+	normal_bed = tidyr::separate(normal_bed, id, into=c('id','version'))
 	print(extended_utrs)
-	extended_utrs = separate(extended_utrs, id, into=c('id','dummy2','chrom_dup','strand_dup'))
+	extended_utrs = tidyr::separate(extended_utrs, id, into=c('id','dummy2','chrom_dup','strand_dup'))
 	print('bar')
 	normal_bed$version = NULL
 	print('bar')
@@ -53,8 +53,8 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	reannotate = function(tx_id) {
 
-		canonical_tx_record = filter(normal_bed, id==tx_id)
-		apatrap_tx_record = filter(extended_utrs, id==tx_id)
+		canonical_tx_record = dplyr::filter(normal_bed, id==tx_id)
+		apatrap_tx_record = dplyr::filter(extended_utrs, id==tx_id)
 
 		if (dim(apatrap_tx_record)[1] == 0) { # no record
 			return (canonical_tx_record)
@@ -92,9 +92,9 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 		}
 	}
 
-	old_records_changed = map(tx_ids, reannotate)
+	old_records_changed = purrr::map(tx_ids, reannotate)
 
-	old_records_changed = ldply(old_records_changed, data.frame) %>% as.tibble()
+	old_records_changed = plyr::ldply(old_records_changed, data.frame) %>% as.tibble()
 
 	print('old records changed')
 	old_records_changed %>% select(id) %>% table() %>% print()
@@ -126,14 +126,14 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	# add version number back in
 
-	all_transcripts = read_tsv(file=all_transcripts_file, col_names=c('id'))
-	all_transcripts = separate(all_transcripts, id, into=c('id','version'))
+	all_transcripts = readr::read_tsv(file=all_transcripts_file, col_names=c('id'))
+	all_transcripts = tidyr::separate(all_transcripts, id, into=c('id','version'))
 	all_transcripts = all_transcripts %>% distinct # remove duplicate entries
 
 	print(all_transcripts)
 
 	x = merge(full_set, all_transcripts, by.x='id', by.y='id')
-	x = unite(x, id, c('id','version'), sep = ".", remove = TRUE)
+	x = tidyr::unite(x, id, c('id','version'), sep = ".", remove = TRUE)
 
 	x = x[,c('chromosome','start','stop','strand','id')]
 	print(x)
@@ -159,9 +159,9 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 	return (txs)
 	}
 
-	full_set_sorted = map(tx_IDs, reorder_bed_files)
+	full_set_sorted = purrr::map(tx_IDs, reorder_bed_files)
 	print(full_set_sorted[1:30])
-	full_set_sorted = ldply(full_set_sorted, data.frame) %>% as.tibble()
+	full_set_sorted = plyr::ldply(full_set_sorted, data.frame) %>% as.tibble()
 	print(full_set_sorted[1:200,], n=Inf)
 
 	return(full_set_sorted)
