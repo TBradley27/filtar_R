@@ -1,4 +1,5 @@
 #' @export
+#' @importFrom magrittr %>%
 
 get_canonical_AIRs = function(utr_lengths) {
 	AIRs = readr::read_tsv(utr_lengths, col_names=TRUE)

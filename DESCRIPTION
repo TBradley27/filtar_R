@@ -10,11 +10,12 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
-	plyr,
 	dplyr,
-	tibble,
-	tidyr,
+	magrittr,
+	plyr,
+	purrr,
 	readr,
 	stringr,
-	purrr
+	tibble,
+	tidyr
 RoxygenNote: 6.1.1
