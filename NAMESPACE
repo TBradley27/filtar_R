@@ -3,6 +3,7 @@
 export(AvgBedgraph)
 export(fix_ts_output)
 export(get_AIR_file)
+export(get_canonical_AIRs)
 export(get_full_bed)
 export(get_mirna_context)
 export(get_mirna_family)

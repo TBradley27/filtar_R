@@ -1,3 +1,5 @@
+#' @export
+
 get_canonical_AIRs = function(utr_lengths) {
 	AIRs = read_tsv(utr_lengths, col_names=TRUE)
 	AIRs$start = 1
