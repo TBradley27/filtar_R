@@ -26,7 +26,7 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	# read in the data
 	normal_bed = readr::read_tsv(normal_bed_file, col_names=c('chromosome','start','stop','strand','id'), col_types=list('c','i','i','c','c'))
-	extended_utrs = readr::read_tsv(extended_bed_file, col_names=c('chromosome','start','stop','id','dummy','strand'))
+	extended_utrs = readr::read_tsv(extended_bed_file, col_names=c('chromosome','start','stop','id','dummy','strand'), col_types=list('c','i','i','c','i','c'))
 
 	print('bar')
 
@@ -128,7 +128,7 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	all_transcripts = readr::read_tsv(file=all_transcripts_file, col_names=c('id'))
 	all_transcripts = tidyr::separate(all_transcripts, id, into=c('id','version'))
-	all_transcripts = all_transcripts %>% distinct # remove duplicate entries
+	all_transcripts = dplyr::distinct(all_transcripts) # remove duplicate entries
 
 	print(all_transcripts)
 
