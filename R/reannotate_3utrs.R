@@ -97,7 +97,7 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 	old_records_changed = plyr::ldply(old_records_changed, data.frame) %>% tibble::as.tibble()
 
 	print('old records changed')
-	old_records_changed %>% select(id) %>% table() %>% print()
+	old_records_changed %>% dplyr::select(id) %>% table() %>% print()
 
 	new_records = extended_utrs[!extended_utrs$id %in% normal_bed$id,]
 	#new_records$chromosome = paste('chr',new_records$chromosome,sep='')
