@@ -1,6 +1,6 @@
 library(filtar)
 
-context('test_bedgraph_averaging')
+context('test AvgBedgraph')
 
 merged_bedgraph = tibble::tibble(chromosome=c(1,1,1,2,2,2,2),
 			start=c(50,80,110,30,60,90,150),
@@ -20,3 +20,42 @@ test_that("avg is a true mean average of 2 coverage columns", {
   expect_equal(avg_bedgraph$avg[6], 4.5)
   expect_equal(avg_bedgraph$avg[7], 6)
 })
+
+merged_bedgraph2 = tibble::tibble(chromosome=c(1,1,1,2,2,2,2),
+                        start=c(50,80,110,30,60,90,150),
+                        stop=c(60,90,120,40,70,100,160),
+                        cov1=c(1,2,5,6,3,4,6),
+                        cov2=c(1,10,3,6,4,5,6),
+			cov3=c(1,10,3,6,4,5,6)
+)
+
+avg_bedgraph2 = AvgBedgraph(merged_bedgraph2)
+
+test_that("avg is a true mean average of 3 coverage columns", {
+  expect_equal(avg_bedgraph2$avg[1], 1)
+  expect_equal(avg_bedgraph2$avg[2], 7.33, tolerance=0.1)
+  expect_equal(avg_bedgraph2$avg[3], 3.67, tolerance=0.1)
+  expect_equal(avg_bedgraph2$avg[4], 6)
+  expect_equal(avg_bedgraph2$avg[5], 3.67, tolerance=0.1)
+  expect_equal(avg_bedgraph2$avg[6], 4.67, tolerance=0.1)
+  expect_equal(avg_bedgraph2$avg[7], 6)
+})
+
+merged_bedgraph3 = tibble::tibble(chromosome=c(1,1,1,2,2,2,2),
+                        start=c(50,80,110,30,60,90,150),
+                        stop=c(60,90,120,40,70,100,160),
+                        cov1=c(1,2,5,6,3,4,6),
+)
+
+avg_bedgraph3 = AvgBedgraph(merged_bedgraph3)
+
+test_that("avg is a true mean average of 1 coverage columns", {
+  expect_equal(avg_bedgraph3$avg[1], 1)
+  expect_equal(avg_bedgraph3$avg[2], 2)
+  expect_equal(avg_bedgraph3$avg[3], 5)
+  expect_equal(avg_bedgraph3$avg[4], 6)
+  expect_equal(avg_bedgraph3$avg[5], 3)
+  expect_equal(avg_bedgraph3$avg[6], 4)
+  expect_equal(avg_bedgraph3$avg[7], 6)
+})
+
