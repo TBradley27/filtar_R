@@ -28,25 +28,15 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 	normal_bed = readr::read_tsv(normal_bed_file, col_names=c('chromosome','start','stop','strand','id'), col_types=list('c','i','i','c','c'))
 	extended_utrs = readr::read_tsv(extended_bed_file, col_names=c('chromosome','start','stop','id','dummy','strand'), col_types=list('c','i','i','c','i','c'))
 
-	print('bar')
-
 	# tidy the data
 	normal_bed = tidyr::separate(normal_bed, id, into=c('id','version'))
-	print(extended_utrs)
 	extended_utrs = tidyr::separate(extended_utrs, id, into=c('id','dummy2','chrom_dup','strand_dup'))
-	print('bar')
 	normal_bed$version = NULL
-	print('bar')
 	extended_utrs = extended_utrs[,c('chromosome','start','stop','strand','id')]
 	extended_utrs$chromosome = stringr::str_replace_all(extended_utrs$chromosome, 'chr','')
 	normal_bed$chromosome = stringr::str_replace_all(normal_bed$chromosome, 'chr','')
 
-	print('bar')
-
 	##
-
-	print(normal_bed)
-	print(extended_utrs)
 
 	tx_ids = normal_bed[normal_bed$id %in% extended_utrs$id,]
 	tx_ids = tx_ids$id %>% unique()
@@ -96,23 +86,22 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	old_records_changed = plyr::ldply(old_records_changed, data.frame) %>% tibble::as.tibble()
 
-	print('old records changed')
-	old_records_changed %>% dplyr::select(id) %>% table() %>% print()
+	#old_records_changed %>% dplyr::select(id) %>% table() %>% print()
 
 	new_records = extended_utrs[!extended_utrs$id %in% normal_bed$id,]
 	#new_records$chromosome = paste('chr',new_records$chromosome,sep='')
 	new_records$strand = gsub('\\+','1',new_records$strand)
 	new_records$strand = gsub('-','-1',new_records$strand)
 
-	print('new records')
-	print(new_records)
+	#print('new records')
+	#print(new_records)
 
 	#new_records %>% select(id) %>% table() %>% print()
 
 	old_records_unchanged = normal_bed[!normal_bed$id %in% extended_utrs$id,]
 
-	print('old records unchanged')
-	print(old_records_unchanged)
+	#print('old records unchanged')
+	#print(old_records_unchanged)
 
 	full_set = rbind(old_records_changed, new_records, old_records_unchanged)
 
@@ -130,19 +119,19 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 	all_transcripts = tidyr::separate(all_transcripts, id, into=c('id','version'))
 	all_transcripts = dplyr::distinct(all_transcripts) # remove duplicate entries
 
-	print(all_transcripts)
+	#print(all_transcripts)
 
 	x = merge(full_set, all_transcripts, by.x='id', by.y='id')
 	x = tidyr::unite(x, id, c('id','version'), sep = ".", remove = TRUE)
 
 	x = x[,c('chromosome','start','stop','strand','id')]
-	print(x)
+	#print(x)
 
 	full_set = x
 
 	full_set = full_set[order(full_set$start, decreasing=FALSE),]
 
-	print('just after tx start position ordering')
+	#print('just after tx start position ordering')
 
 	tx_IDs = full_set$id %>% unique()
 
@@ -160,9 +149,9 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 	}
 
 	full_set_sorted = purrr::map(tx_IDs, reorder_bed_files)
-	print(full_set_sorted[1:30])
+#	print(full_set_sorted[1:30])
 	full_set_sorted = plyr::ldply(full_set_sorted, data.frame) %>% tibble::as.tibble()
-	print(full_set_sorted[1:200,], n=Inf)
+#	print(full_set_sorted[1:200,], n=Inf)
 
 	return(full_set_sorted)
 }

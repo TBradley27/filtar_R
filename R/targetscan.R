@@ -60,7 +60,7 @@ get_mirna_family = function(mirna_seeds, species) {
 
         mirna_seeds = plyr::ldply(mirna_seeds, data.frame) %>% tibble::as.tibble()
 
-        print(mirna_seeds)
+#        print(mirna_seeds)
 
         mirna_seeds$seq = as.factor(mirna_seeds$seq)
         mirna_seeds$identifier = as.integer(mirna_seeds$seq)
@@ -85,11 +85,11 @@ get_mirna_context = function (mirna_seed_file, mature_mirnas_file, species) {
 
 	specific_tax_id = TaxID[[species]]
 
-	mirna_seeds = readr::read_tsv(mirna_seed_file, col_names=c("identifier", "seq", "tax_id"))
-	print(mirna_seeds)
+	mirna_seeds = readr::read_tsv(mirna_seed_file, col_names=c("identifier", "seq", "tax_id"), col_types='dci')
+#	print(mirna_seeds)
 
-	mirnas = readr::read_tsv(mature_mirnas_file, col_names = c('miRNA_family','tax_id','miRNA','miRNA_sequence'))
-	print(mirnas)
+	mirnas = readr::read_tsv(mature_mirnas_file, col_names = c('miRNA_family','tax_id','miRNA','miRNA_sequence'), col_types='cicc')
+#	print(mirnas)
 	mirnas$seed = stringr::str_sub(mirnas$miRNA_sequence, 2, 8)
 
 	test = merge(mirnas, mirna_seeds, by.x = 'seed', by.y = 'seq')
@@ -109,7 +109,8 @@ return(test)
 
 get_AIR_file = function(APA_file,UTR_lengths_file) {
 	APAtrap_output = read.table(APA_file, sep="\t",
-				    header=TRUE) %>% tibble::as.tibble()
+				    header=TRUE)
+	APAtrap_output = tibble::as.tibble(APAtrap_output)
 
 	#APAtrap_output = APAtrap_output[1:1268,] # remove incomplete rows - I have no idea what this line is for
 
@@ -263,26 +264,27 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	  return (records)
 	}
 
-	APA_records = purrr::map(tx_ids, get_rel_APA_position) %>% plyr::ldply(data.frame) %>% tibble::as.tibble
+	APA_records = purrr::map(tx_ids, get_rel_APA_position) %>% plyr::ldply(data.frame)
+	APA_records = tibble::as.tibble(APA_records)
 
 	all_transcripts = readr::read_tsv(UTR_lengths_file, col_names=TRUE)
 
 	# add version numbers to all APA records
 
 	all_transcripts_sep = tidyr::separate(all_transcripts, tx_id, into=c('tx_id','version'))
-	print(all_transcripts)
+#	print(all_transcripts)
 	APA_records = merge(APA_records,all_transcripts_sep,by.x='id',by.y='tx_id')
 	APA_records$utr_length = NULL
-	print(APA_records)
+#	print(APA_records)
 	APA_records = tidyr::unite(APA_records, col='id', c('id','version'), sep=".")	
-	print(APA_records)
+#	print(APA_records)
 	non_updated_tx = all_transcripts[!all_transcripts$tx_id %in% APA_records$id,]
-	print(non_updated_tx)
+#	print(non_updated_tx)
 	non_updated_tx$start = 1
 	non_updated_tx$AIR = 100
 	non_updated_tx = non_updated_tx[,c('tx_id','start','utr_length','AIR')]
 	colnames(non_updated_tx) = c('id','rel_start_pos','rel_end_pos','AIR')
-	print(non_updated_tx)
+#	print(non_updated_tx)
 
 	APA_records = rbind(APA_records,non_updated_tx)
 	
@@ -334,7 +336,7 @@ fix_ts_output = function (ts_sites_output) {
         dummy3 = vector(length=dim(ts_sites)[1])
 
         for (i in 1:dim(ts_sites)[1] ) {
-                print(  (i/dim(ts_sites)[1]) * 100 ) # progress bar
+ #               print(  (i/dim(ts_sites)[1]) * 100 ) # progress bar
                 dummy[i] = sort_species(ts_sites$Species_in_this_group[i])
                 dummy2[i] = remove_redundant_site_types(ts_sites$Group_type[i])
 
@@ -359,3 +361,24 @@ fix_ts_output = function (ts_sites_output) {
 
         return(ts_sites)
 }
+
+#' @export
+
+filter_contextpp_scores = function (contextpp_scores_filename, expression_values_filename) {
+
+	contextpp_scores = readr::read_tsv(contextpp_scores_filename, col_names=TRUE)
+	expression_values = readr::read_tsv(expression_values_filename, col_names=TRUE)
+
+	merged_dataset = merge(contextpp_scores, expression_values, by.x='Gene ID', by.y='Name')
+	filtered_merged_dataset = dplyr::filter(merged_dataset, TPM >= snakemake@params['tpm_expression_threshold'])
+
+	return(filtered_merged_dataset)
+}
+
+
+
+
+
+
+
+
