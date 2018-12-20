@@ -2,6 +2,9 @@
 
 export(AvgBedgraph)
 export(AvgSalmonQuant)
+export(filter_contextpp_scores)
+export(filter_mature_mirs)
+export(filter_mir_families)
 export(fix_ts_output)
 export(get_AIR_file)
 export(get_canonical_AIRs)
