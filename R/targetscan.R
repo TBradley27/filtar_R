@@ -214,8 +214,6 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	y$id = gsub('\\|.*','',y$id)
 	y = y[,c(2,1)] # reorder columns
 
-#	print(y) # gene names and expression values without utr loci
-
 	new = APAtrap_output
 	new$Gene = gsub('\\|.*','',APAtrap_output$Gene) 
 	new = new[,c('Gene','b','Loci','strand','start_pos')]
@@ -271,9 +269,10 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 
 	# add version numbers to all APA records
 
-	all_transcripts_sep = tidyr::separate(all_transcripts, tx_id, into=c('tx_id','version'))
+	all_transcripts_sep = tidyr::separate(all_transcripts, tx_id, into=c('id','version'))
 #	print(all_transcripts)
-	APA_records = merge(APA_records,all_transcripts_sep,by.x='id',by.y='tx_id')
+	#APA_records = merge(APA_records,all_transcripts_sep,by='id')
+        APA_records = plyr::join(APA_records, all_transcripts_sep, by=c('id'))
 	APA_records$utr_length = NULL
 #	print(APA_records)
 	APA_records = tidyr::unite(APA_records, col='id', c('id','version'), sep=".")	
@@ -286,7 +285,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	colnames(non_updated_tx) = c('id','rel_start_pos','rel_end_pos','AIR')
 #	print(non_updated_tx)
 
-	APA_records = rbind(APA_records,non_updated_tx)
+	APA_records = rbind(APA_records,non_updated_tx) %>% tibble::as.tibble()
 	
 	return(APA_records)
 }
