@@ -1,6 +1,3 @@
-library(plyr)
-library(tidyverse)
-library(filtar)
 
 context('test get_mirna_context')
 
@@ -25,7 +22,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 			expect_match( output$miRNA, "^hsa-(miR|let|lin)-?[0-9]{1,5}[a-z]?(-[0-9]-)?((-3|5)p)?")
 		})
 
-		input_seeds = read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% filter(tax_id=='9606')
+		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% filter(tax_id=='9606')
 
 
 	} else if (species == 'mmu') {
@@ -38,7 +35,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 			expect_match( output$miRNA, "^mmu-(miR|let|lin)-?[0-9]{1,5}[a-z]?(-[0-9]-)?((-3|5)p)?")
 		})
 
-		input_seeds = read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% filter(tax_id=='10090')
+		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% filter(tax_id=='10090')
 
 	}
 
@@ -72,7 +69,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 			expect_match('CGAAAAG' %in% output$seq %>% as.character, 'FALSE')
 		})
 
-		expected_output = tibble(identifier=c(1,1,2,3),tax_id.x=c(as.integer(9606),as.integer(9606),as.integer(9606),as.integer(9606)),miRNA=c('hsa-miR-1a-3p','hsa-miR-1b-3p','hsa-miR-2-5p',
+		expected_output = tibble::tibble(identifier=c(1,1,2,3),tax_id.x=c(as.integer(9606),as.integer(9606),as.integer(9606),as.integer(9606)),miRNA=c('hsa-miR-1a-3p','hsa-miR-1b-3p','hsa-miR-2-5p',
 					'hsa-miR-3-5p'),
 					miRNA_sequence=c('AAGCGCGCCCTCTCGCGAGA','AAGCGCGCCCTCTCGCGTGA','CCCTCTCGAAAAAAAGCGCG','CGCGCGAGAAAAAAAGCGCG'))
 		test_that('expected output matches actual output', {
@@ -98,7 +95,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 			expect_match('GATTGCG' %in% output$seq %>% as.character, 'FALSE')
 		})
 
-		expected_output = tibble(identifier=c(1,1,2),tax_id.x=c(as.integer(10090),as.integer(10090),as.integer(10090)),miRNA=c('mmu-miR-4-5p','mmu-miR-4b-5p','mmu-miR-1-3p'),
+		expected_output = tibble::tibble(identifier=c(1,1,2),tax_id.x=c(as.integer(10090),as.integer(10090),as.integer(10090)),miRNA=c('mmu-miR-4-5p','mmu-miR-4b-5p','mmu-miR-1-3p'),
 					miRNA_sequence=c('CAAAAAAAGCGCGCGCGCGT','CAAAAAAAGCGCGCGTTCGT','ACCTCTCGCGAGAGAGGCGC'))
 		test_that('expected output matches actual output', {
 			expect_equal(expected_output, output)

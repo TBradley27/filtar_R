@@ -1,8 +1,3 @@
-library(plyr)
-library(tidyverse)
-library(filtar)
-library(testthat)
-
 output = get_AIR_file('hsa_HeLa.APA.txt','hsa_HeLa.utr.lengths.tsv')
 
 context('test get_AIR_file')

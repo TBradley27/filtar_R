@@ -1,5 +1,3 @@
-library(filtar)
-
 context('test get_mirna_family')
 
 run_test = function(input, species ) {

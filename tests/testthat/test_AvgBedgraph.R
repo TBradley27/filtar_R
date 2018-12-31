@@ -1,5 +1,3 @@
-library(filtar)
-
 context('test AvgBedgraph')
 
 merged_bedgraph = tibble::tibble(chromosome=c(1,1,1,2,2,2,2),
