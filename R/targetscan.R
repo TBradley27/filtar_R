@@ -1,5 +1,5 @@
 #' Generates a miRNA family file in specific targetscan format
-#' @param mirna_seed information - a table with miRNA and species identifiers as well as seed sequences
+#' @param mirna_seeds information - a table with miRNA and species identifiers as well as seed sequences
 #' @param species three letter species code e.g. hsa,mmu etc - used as the reference species
 #' @return A data frame in which miRNA famiilies have been enumerated, with seed sequences and NCBI species taxnonomic IDs. All families contain a seed sequence from the reference species
 #' @export
@@ -128,7 +128,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 	}
 	else {
 
-		APAtrap_output = read.table(APA_file, sep="\t",
+		APAtrap_output = utils::read.table(APA_file, sep="\t",
 					    header=TRUE)
 		APAtrap_output = tibble::as.tibble(APAtrap_output)
 		print(APAtrap_output)
@@ -208,7 +208,7 @@ get_AIR_file = function(APA_file,UTR_lengths_file) {
 		      percent_fall = percent_vec[i]
 		      cumulative_depreciation = c(
 			cumulative_depreciation, 
-			tail(cumulative_depreciation, n=1) - percent_fall
+			utils::tail(cumulative_depreciation, n=1) - percent_fall
 		      )
 		    }
 		    return (cumulative_depreciation)
@@ -374,6 +374,10 @@ fix_ts_output = function (ts_sites_output) {
         return(ts_sites)
 }
 
+#' Filter context++ scores by the normalised expression values of putative target transcripts within a given biological context
+#' @param contextpp_scores_filename The file name of a context++ results file
+#' @param expression_values_filename The file name of a salmon output file of normalised expression values
+#' @return A tibble of context++ scores filtered by a given TPM threshold
 #' @export
 
 filter_contextpp_scores = function (contextpp_scores_filename, expression_values_filename) {

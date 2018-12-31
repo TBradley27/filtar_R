@@ -1,3 +1,7 @@
+
+#' Generate a file of affected isoform ratio (AIR) data for use in computing context++ scores when executing targetscan7 (10.7554/eLife.05005).
+#' @param utr_lengths A two-column tab delimited file: tx_id, utr_length
+#' @return AIRs A four-column tibble - tx_id, start, utr_length, AIR
 #' @export
 #' @importFrom magrittr %>%
 
