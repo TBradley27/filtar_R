@@ -22,7 +22,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 			expect_match( output$miRNA, "^hsa-(miR|let|lin)-?[0-9]{1,5}[a-z]?(-[0-9]-)?((-3|5)p)?")
 		})
 
-		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% filter(tax_id=='9606')
+		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% dplyr::filter(tax_id=='9606')
 
 
 	} else if (species == 'mmu') {
@@ -35,7 +35,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 			expect_match( output$miRNA, "^mmu-(miR|let|lin)-?[0-9]{1,5}[a-z]?(-[0-9]-)?((-3|5)p)?")
 		})
 
-		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% filter(tax_id=='10090')
+		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% dplyr::filter(tax_id=='10090')
 
 	}
 
