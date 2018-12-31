@@ -1,5 +1,5 @@
 Package: filtar
-Title: A Series of R Helper Functions for the Main Filtar Workflow
+Title: A Series of Support Functions for the Main Filtar Workflow
 Version: 0.0.0.9000
 Authors@R: person("Thomas", "Bradley", email = "thomas.bradley435@gmail.com", role = c("aut", "cre"))
 Description: This package assists the main filtar workflow to manipulated bed
