@@ -1,7 +1,7 @@
 
 #' Concatenate fasta seqeunce for fasta records with the same header. Concatenation occurs in order of appearance in the file 
 
-#' @param name of file containing fasta records
+#' @param file name of file containing fasta records
 #' @return A one-column tibble in which fasta headers and fasta sequences are interleaved
 #' @export
 #' @importFrom plyr .

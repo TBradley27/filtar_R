@@ -7,7 +7,7 @@
 MergeFasta(file)
 }
 \arguments{
-\item{name}{of file containing fasta records}
+\item{file}{name of file containing fasta records}
 }
 \value{
 A one-column tibble in which fasta headers and fasta sequences are interleaved
