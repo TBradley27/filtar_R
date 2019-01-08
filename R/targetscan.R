@@ -75,15 +75,11 @@ get_mirna_family = function(mirna_seeds, species) {
 #' get miRNA file needed for computing contextpp scores
 #' @param mirna_seed_file A file containing miRNA accessions with corresponding seed sequences
 #' @param mature_mirnas_file A file containing miRNA accessions with corresponding mature miRNA sequences
-#' @param species - three-letter species code
+#' @param specific_tax_id - NCBI taxonomic ID
 #' @return A file containing the name of the miRNA family, the NCBI species taxonomic ID, the name of the mature miRNA and also the mature miRNA sequence
 #' @export
 
-get_mirna_context = function (mirna_seed_file, mature_mirnas_file, species) {
-
-	TaxID = list(hsa="9606", mmu="10090")
-
-	specific_tax_id = TaxID[[species]]
+get_mirna_context = function (mirna_seed_file, mature_mirnas_file, specific_tax_id) {
 
 	mirna_seeds = readr::read_tsv(mirna_seed_file, col_names=c("identifier", "seq", "tax_id"), col_types='dci')
 #	print(mirna_seeds)
@@ -409,11 +405,3 @@ filter_miRanda_scores = function (miRanda_scores_filename, expression_values_fil
 
         return(filtered_merged_dataset)
 }
-
-
-
-
-
-
-
-

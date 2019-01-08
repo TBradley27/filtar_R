@@ -4,14 +4,14 @@
 \alias{get_mirna_context}
 \title{get miRNA file needed for computing contextpp scores}
 \usage{
-get_mirna_context(mirna_seed_file, mature_mirnas_file, species)
+get_mirna_context(mirna_seed_file, mature_mirnas_file, specific_tax_id)
 }
 \arguments{
 \item{mirna_seed_file}{A file containing miRNA accessions with corresponding seed sequences}
 
 \item{mature_mirnas_file}{A file containing miRNA accessions with corresponding mature miRNA sequences}
 
-\item{species}{- three-letter species code}
+\item{specific_tax_id}{- NCBI taxonomic ID}
 }
 \value{
 A file containing the name of the miRNA family, the NCBI species taxonomic ID, the name of the mature miRNA and also the mature miRNA sequence

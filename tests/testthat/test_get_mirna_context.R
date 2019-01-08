@@ -12,7 +12,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 		expect_true(all(output$identifier == cummax(output$identifier)))
 	})
 
-	if (species == 'hsa') {
+	if (species == 9606) {
 
 		test_that('The tax id column is correct', {
 			expect_match(as.character(output$tax_id.x), '9606')
@@ -25,7 +25,7 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 		input_seeds = readr::read_tsv(mirna_family_filename, col_names=c('identifier','seq','tax_id')) %>% dplyr::filter(tax_id=='9606')
 
 
-	} else if (species == 'mmu') {
+	} else if (species == 10090) {
 
 		test_that('The tax id column is correct', {
 			expect_match(as.character(output$tax_id.x), '10090')
@@ -104,5 +104,5 @@ run_tests = function(mirna_family_filename,mature_mirna_filename,species) {
 	}
 }
 
-run_tests('hsa_mirna_families.tsv', 'hsa_mature_mirnas.tsv', 'hsa')
-run_tests('mmu_mirna_families.tsv','mmu_mature_mirnas.tsv','mmu')
+run_tests('hsa_mirna_families.tsv', 'hsa_mature_mirnas.tsv', 9606)
+run_tests('mmu_mirna_families.tsv','mmu_mature_mirnas.tsv',10090)
