@@ -4,12 +4,14 @@
 \alias{get_mirna_family}
 \title{Generates a miRNA family file in specific targetscan format}
 \usage{
-get_mirna_family(mirna_seeds, species)
+get_mirna_family(mirna_seeds, species, tax_id)
 }
 \arguments{
 \item{mirna_seeds}{information - a table with miRNA and species identifiers as well as seed sequences}
 
 \item{species}{three letter species code e.g. hsa,mmu etc - used as the reference species}
+
+\item{tax_id}{NCBI taxonomic species of refernce species}
 }
 \value{
 A data frame in which miRNA famiilies have been enumerated, with seed sequences and NCBI species taxnonomic IDs. All families contain a seed sequence from the reference species

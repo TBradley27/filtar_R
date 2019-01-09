@@ -1,10 +1,11 @@
 #' Generates a miRNA family file in specific targetscan format
 #' @param mirna_seeds information - a table with miRNA and species identifiers as well as seed sequences
 #' @param species three letter species code e.g. hsa,mmu etc - used as the reference species
+#' @param tax_id NCBI taxonomic species of refernce species
 #' @return A data frame in which miRNA famiilies have been enumerated, with seed sequences and NCBI species taxnonomic IDs. All families contain a seed sequence from the reference species
 #' @export
 
-get_mirna_family = function(mirna_seeds, species) {
+get_mirna_family = function(mirna_seeds, species, tax_id) {
 
         mirna_seeds = readr::read_tsv(mirna_seeds, col_names=c("identifier", "seq"))
 
@@ -26,50 +27,62 @@ get_mirna_family = function(mirna_seeds, species) {
           ama="176014",   cli="8932",  apl="8839",   gga="9031",  mga="9103",   ami="8496",   cmy="8469",  cpi="8478",
           psi="13735",   asp="55534",   aca="28377",   xtr="8364",   lch="7897")
 
-	map_ids = function(string) {
-  		tax_id = TaxID[[string]]
+	if (!species %in% c('hsa','mmu')) { # if conservation information is not available for the reference species
+		mirna_seeds = mirna_seeds[mirna_seeds$species == species ,]
+		mirna_seeds$seq = as.factor(mirna_seeds$seq)
+		mirna_seeds$identifier = as.integer(mirna_seeds$seq)
+		mirna_seeds$species = tax_id
+        	mirna_seeds = unique( mirna_seeds[,] )
+		return(mirna_seeds)
+	} else {	# if conservation information is available for the reference species
 
-  		return (tax_id)
-	}
+		map_ids = function(string) {
+			tax_id = TaxID[[string]]
 
-        mirna_seeds = mirna_seeds[mirna_seeds$species %in% names(TaxID),]
+			return (tax_id)
+		}
 
-        mirna_seeds$tax_id = purrr::map(mirna_seeds$species, map_ids)
-        mirna_seeds$species = NULL
+		mirna_seeds = mirna_seeds[mirna_seeds$species %in% names(TaxID),]
 
-        mirna_seeds$tax_id = as.character(mirna_seeds$tax_id)
+		mirna_seeds$tax_id = purrr::map(mirna_seeds$species, map_ids)
+		mirna_seeds$species = NULL
 
-        # delete families which do not include a human orhtologue
+		mirna_seeds$tax_id = as.character(mirna_seeds$tax_id)
 
-        unique_seeds = mirna_seeds$seq %>% unique()
+		# delete families which do not include a human orhtologue
 
-	delete_mirs_without_reference = function(string) {
+		unique_seeds = mirna_seeds$seq %>% unique()
 
-	x = dplyr::filter(mirna_seeds, seq == string)
+		delete_mirs_without_reference = function(string) {
 
-	if (TaxID[[species]] %in% x$tax_id) {
-		return (x)
-	}
+		x = dplyr::filter(mirna_seeds, seq == string)
 
-	else {
-		return ()
-	}
-	}
+		if (TaxID[[species]] %in% x$tax_id) {
+			return (x)
+		}
 
-        mirna_seeds = purrr::map(unique_seeds, delete_mirs_without_reference)
+		else {
+			return ()
+		}
+		}
 
-        mirna_seeds = plyr::ldply(mirna_seeds, data.frame) %>% tibble::as.tibble()
+		mirna_seeds = purrr::map(unique_seeds, delete_mirs_without_reference)
 
-#        print(mirna_seeds)
+		mirna_seeds = plyr::ldply(mirna_seeds, data.frame) %>% tibble::as.tibble()
 
-        mirna_seeds$seq = as.factor(mirna_seeds$seq)
-        mirna_seeds$identifier = as.integer(mirna_seeds$seq)
+	#        print(mirna_seeds)
 
-        # remove duplicate lines
+		mirna_seeds$seq = as.factor(mirna_seeds$seq)
+		mirna_seeds$identifier = as.integer(mirna_seeds$seq)
 
-        mirna_seeds = unique( mirna_seeds[,] )
+		# remove duplicate lines
 
-        return (mirna_seeds)
+		mirna_seeds = unique( mirna_seeds[,] )
+
+		return (mirna_seeds)
+
+		}
+
 }
 
 #' get miRNA file needed for computing contextpp scores

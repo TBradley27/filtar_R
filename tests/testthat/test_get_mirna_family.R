@@ -1,8 +1,8 @@
 context('test get_mirna_family')
 
-run_test = function(input, species ) {
+run_test = function(input, species, tax_id ) {
 
-        output = get_mirna_family(input,species)
+        output = get_mirna_family(input,species,tax_id)
 
         test_that('id column contains 1-4 numbers', {
                 expect_match(as.character(output$identifier), '^[0-9]{1,4}$')
@@ -45,5 +45,5 @@ run_test = function(input, species ) {
         }
 }
 
-run_test('mirna_seeds.tsv','hsa')
-run_test('mirna_seeds.tsv', 'mmu')
+run_test('mirna_seeds.tsv','hsa', 9606)
+run_test('mirna_seeds.tsv', 'mmu', 10090)
