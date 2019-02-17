@@ -5,7 +5,7 @@ Authors@R: person("Thomas", "Bradley", email = "thomas.bradley435@gmail.com", ro
 Description: This package assists the main filtar workflow to manipulated bed
 	and bedgraph files, to reannotate 3'UTRs and to execute a complete
 	targetscan7 workflow.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.4.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
