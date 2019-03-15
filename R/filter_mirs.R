@@ -10,9 +10,22 @@ filter_mature_mirs = function (input_file, list_of_mirs, output_file) {
 		file.copy(from=input_file, to=output_file)
 		return(NULL)
 	}
-	else {
+	else {		
 		df = readr::read_tsv(input_file, col_names=c('miR_family_id','species_id','mature_mirna_name','sequence'), col_types='cccc')
+
+		for (mir in list_of_mirs) {
+			if (!mir %in% df$mature_mirna_name) {
+				write(stringr::str_interp("miRNA identifier '${mir}' not found in data/mature.fa"), stderr())
+			}
+		}
+
 		df = df[df$mature_mirna_name %in% list_of_mirs,]
+		
+		if (dim(df)[1] == 0) {
+			write("No valid miRNA identifers in input. Halting execution.", stderr())
+			quit(save="no", status=1)			
+		}
+
 		utils::write.table(df, output_file, col.names=FALSE, row.names=FALSE, sep="\t", quote=FALSE)
 		return(NULL)
 	}
