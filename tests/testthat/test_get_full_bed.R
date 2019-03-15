@@ -5,7 +5,7 @@ x = get_full_bed('example_ensembl.bed','example_APAtrap.bed','hsa_all_transcript
 y = x %>% dplyr::filter(id=='ENST00000224237.9')
 
 test_that("ENST00000224237.9 has the correct start codon annotation", {
-                expect_equal(17237230, y$start[1], )
+                expect_equal(17237271, y$start[1], )
 })
 
 test_that("ENST00000224237.9 has the correct end codon annotation", {
@@ -30,7 +30,7 @@ test_that("ENST00000298510.3 has the correct start codon annotation", {
 })
 
 test_that("ENST00000298510.3 has the correct end codon annotation", {
-                expect_equal(119168533, y$stop[1], )
+                expect_equal(119168479, y$stop[1], )
 })
 
 y = x %>% dplyr::filter(id=='ENST00000463743.5')
@@ -43,25 +43,25 @@ test_that("ENST00000463743.5 has the correct end codon annotation", {
                 expect_equal(93307001, y$stop[7], )
 })
 
-y = x %>% dplyr::filter(id=='ENST00000363306.1')
+#y = x %>% dplyr::filter(id=='ENST00000363306.1') # remove this as we are no longer annotating novel 3'UTRs
 
-test_that("ENST00000363306.1 has the correct start codon annotation", {
-                expect_equal(86889569, y$start[1], )
-})
+#test_that("ENST00000363306.1 has the correct start codon annotation", {
+#                expect_equal(86889569, y$start[1], )
+#})
 
-test_that("ENST00000363306.1 has the correct end codon annotation", {
-                expect_equal(86889682, y$stop[1], )
-})
+#test_that("ENST00000363306.1 has the correct end codon annotation", {
+#                expect_equal(86889682, y$stop[1], )
+#})
 
-y = x %>% dplyr::filter(id=='ENST00000378952.7')
+#y = x %>% dplyr::filter(id=='ENST00000378952.7') # remove this as we are no longer annotating novel 3UTR
 
-test_that("ENST00000378952.7 has the correct start codon annotation", {
-                expect_equal(12167673, y$start[1], )
-})
+#test_that("ENST00000378952.7 has the correct start codon annotation", {
+#                expect_equal(12167673, y$start[1], )
+#})
 
-test_that("ENST00000378952.7 has the correct end codon annotation", {
-                expect_equal(12167811, y$stop[1], )
-})
+#test_that("ENST00000378952.7 has the correct end codon annotation", {
+#                expect_equal(12167811, y$stop[1], )
+#})
 
 y = x %>% dplyr::filter(id=='ENST00000381604.8')
 
@@ -122,5 +122,5 @@ normal_bed$chromosome = stringr::str_replace_all(normal_bed$chromosome, 'chr',''
 old_records = extended_utrs[extended_utrs$id %in% normal_bed$id,]
 
 test_that('bed file has the correct number of rows', {
-        expect_equal(dim(x)[1], dim(normal_bed)[1] + dim(extended_utrs)[1] - dim(old_records)[1])
+        expect_equal(dim(x)[1], dim(normal_bed)[1])
 })

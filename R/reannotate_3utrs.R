@@ -28,6 +28,8 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 	normal_bed = readr::read_tsv(normal_bed_file, col_names=c('chromosome','start','stop','strand','id'), col_types=list('c','i','i','c','c'))
 	extended_utrs = readr::read_tsv(extended_bed_file, col_names=c('chromosome','start','stop','id','dummy','strand'), col_types=list('c','i','i','c','i','c'))
 
+	extended_utrs$start = extended_utrs$start - 1 # change co-ordinate system
+
 	# tidy the data
 	normal_bed = tidyr::separate(normal_bed, id, into=c('id','version'))
 	extended_utrs = tidyr::separate(extended_utrs, id, into=c('id','dummy2','chrom_dup','strand_dup'))
@@ -53,8 +55,20 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 			if (dim(canonical_tx_record)[1] == 1) { # single exon
 
 				new_tx_record = canonical_tx_record
-				new_tx_record$start = apatrap_tx_record$start
-				new_tx_record$stop = apatrap_tx_record$stop
+
+				if (apatrap_tx_record$strand[1] == '+') {
+					if (apatrap_tx_record$stop > new_tx_record$start) {
+						new_tx_record$stop = apatrap_tx_record$stop
+					}
+				}
+				else if (apatrap_tx_record$strand[1] == '-') {
+					if (apatrap_tx_record$start < new_tx_record$stop) {
+						new_tx_record$start = apatrap_tx_record$start
+					}
+				}
+				#new_tx_record = canonical_tx_record
+				#new_tx_record$start = apatrap_tx_record$start
+				#new_tx_record$stop = apatrap_tx_record$stop
 
 				return(new_tx_record)
 
@@ -102,8 +116,11 @@ get_full_bed = function (normal_bed_file, extended_bed_file, all_transcripts_fil
 
 	#print('old records unchanged')
 	#print(old_records_unchanged)
+	print('START NEW RECORDS')
+	print(new_records)
+	print('END NEW RECORDS')
 
-	full_set = rbind(old_records_changed, new_records, old_records_unchanged)
+	full_set = rbind(old_records_changed, old_records_unchanged) #new_records
 
 	# reformat bed file
 
