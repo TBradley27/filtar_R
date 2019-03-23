@@ -1,6 +1,6 @@
 context('test get_full_bed')
 
-x = get_full_bed('example_ensembl.bed','example_APAtrap.bed','hsa_all_transcripts.txt')
+x = get_full_bed('example_ensembl.bed','example_APAtrap.bed','hsa_all_transcripts.txt','human_quant_example.sf')
 
 y = x %>% dplyr::filter(id=='ENST00000224237.9')
 
@@ -101,6 +101,27 @@ test_that("ENST00000567466.1 has the correct start codon annotation", {
 
 test_that("ENST00000567466.1 has the correct end codon annotation", {
                 expect_equal(48114, y$stop[2], )
+})
+
+
+y = x %>% dplyr::filter(id=='ENST00000605788.5') # test that truncations from lowly expressed transcripts are discarded
+
+test_that("ENST00000605788.5 has the correct start codon annotation", {
+                expect_equal(102162269, y$start[1], )
+})
+
+test_that("ENST00000605788.5 has the correct end codon annotation", {
+                expect_equal(102163866, y$stop[1], )
+})
+
+y = x %>% dplyr::filter(id=='ENST00000613434.4') # Same but testing the reverse strand
+
+test_that("ENST00000613434.4 has the correct start codon annotation", {
+                expect_equal(27110111, y$start[1], )
+})
+
+test_that("ENST00000613434.4 has the correct end codon annotation", {
+                expect_equal(27111976, y$stop[1], )
 })
 
 test_that('bed file has the correct number of columns', {

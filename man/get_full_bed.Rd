@@ -4,14 +4,17 @@
 \alias{get_full_bed}
 \title{Generates a full comprehensive 3'UTR bed 6 file by integrating information from a canonical bed 6 file and APAtrap reannotations}
 \usage{
-get_full_bed(normal_bed_file, extended_bed_file, all_transcripts_file)
+get_full_bed(normal_bed_file, extended_bed_file, all_transcripts_file,
+  tx_quant_file)
 }
 \arguments{
 \item{normal_bed_file}{A 3'UTR bed 6 file in standard format}
 
 \item{extended_bed_file}{APAtrap output. Some records will correspond to accessions in a normal_bed_file, whilst some records will reference accessions not found in a normal_bed_file}
 
-\item{all_transcripts_file}{A single column list of all transcript files used to re-add transcript version information to all recrods}
+\item{all_transcripts_file}{A single column list of all transcript files used to re-add transcript version information to all records}
+
+\item{tx_quant_file}{A salmon transcript quantification output file}
 }
 \value{
 A complete bed6 file in standard format in which information from all parameters have been integrated, and in which transcript accession verison information is included
