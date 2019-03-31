@@ -6,7 +6,8 @@
 #' @export
 
 filter_mature_mirs = function (input_file, list_of_mirs, output_file) {
-	if (length(list_of_mirs) == 0) { # if the user does not specify a miRNA - then process all species miRNA as default
+	list_of_mirs_suffix = substring(list_of_mirs,5)
+	if (length(list_of_mirs) == 0 | list_of_mirs_suffix == 'all') { # if the user does not specify a miRNA - then process all species miRNA as default
 		file.copy(from=input_file, to=output_file)
 		return(NULL)
 	}
@@ -40,7 +41,7 @@ filter_mature_mirs = function (input_file, list_of_mirs, output_file) {
 #' @export
 
 filter_mir_families = function (mature_mirna_file, mirna_families_file, list_of_mirs, output_file) {
-        if (length(list_of_mirs) == 0) { # if the user does not specify a miRNA - then process all species miRNA as default
+        if (length(list_of_mirs) == 0 | list_of_mirs == 'all') { # if the user does not specify a miRNA - then process all species miRNA as default
                 file.copy(from=mirna_families_file, to=output_file)
                 return(NULL)
         }
