@@ -1,6 +1,6 @@
 Package: filtar
 Title: A Series of Support Functions for the Main Filtar Workflow
-Version: 0.0.0.9000
+Version: 1.0.0.0
 Authors@R: person("Thomas", "Bradley", email = "thomas.bradley435@gmail.com", role = c("aut", "cre"))
 Description: This package assists the main filtar workflow to manipulated bed
 	and bedgraph files, to reannotate 3'UTRs and to execute a complete
