@@ -386,17 +386,18 @@ fix_ts_output = function (ts_sites_output) {
 #' Filter context++ scores by the normalised expression values of putative target transcripts within a given biological context
 #' @param contextpp_scores_filename The file name of a context++ results file
 #' @param expression_values_filename The file name of a salmon output file of normalised expression values
+#' @param TPM_expression_threshold Transcripts with lower relative abundance than this threshold are removed
 #' @return A tibble of context++ scores filtered by a given TPM threshold
 #' @export
 
-filter_contextpp_scores = function (contextpp_scores_filename, expression_values_filename) {
+filter_contextpp_scores = function (contextpp_scores_filename, expression_values_filename, TPM_expression_threshold) {
 
 	contextpp_scores = readr::read_tsv(contextpp_scores_filename, col_names=TRUE)
 	expression_values = readr::read_tsv(expression_values_filename, col_names=TRUE)
 	
 	merged_dataset = merge(contextpp_scores, expression_values, by.x='Gene ID', by.y='Name')
 	
-	filtered_merged_dataset = dplyr::filter(merged_dataset, TPM >= snakemake@params['tpm_expression_threshold'])
+	filtered_merged_dataset = dplyr::filter(merged_dataset, TPM >= TPM_expression_threshold)
 
 	return(filtered_merged_dataset)
 }
@@ -404,17 +405,18 @@ filter_contextpp_scores = function (contextpp_scores_filename, expression_values
 #' Filter miRanda scores by the normalised expression values of putative target transcripts within a given biological context
 #' @param miRanda_scores_filename The file name of a miRanda results file
 #' @param expression_values_filename The file name of a salmon output file of normalised expression values
+#' @param TPM_expression_threshold Transcripts with lower relative abundance than this threshold are removed
 #' @return A tibble of miRanda scores filtered by a given TPM threshold
 #' @export
 
-filter_miRanda_scores = function (miRanda_scores_filename, expression_values_filename) {
+filter_miRanda_scores = function (miRanda_scores_filename, expression_values_filename, TPM_expression_threshold) {
         
         miRanda_scores = readr::read_tsv(miRanda_scores_filename, col_names=FALSE)
         expression_values = readr::read_tsv(expression_values_filename, col_names=TRUE)
                 
         merged_dataset = merge(miRanda_scores, expression_values, by.x='X2', by.y='Name')
         
-        filtered_merged_dataset = dplyr::filter(merged_dataset, TPM >= snakemake@params['tpm_expression_threshold'])
+        filtered_merged_dataset = dplyr::filter(merged_dataset, TPM >= TPM_expression_threshold)
 
         return(filtered_merged_dataset)
 }

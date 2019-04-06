@@ -5,12 +5,14 @@
 \title{Filter context++ scores by the normalised expression values of putative target transcripts within a given biological context}
 \usage{
 filter_contextpp_scores(contextpp_scores_filename,
-  expression_values_filename)
+  expression_values_filename, TPM_expression_threshold)
 }
 \arguments{
 \item{contextpp_scores_filename}{The file name of a context++ results file}
 
 \item{expression_values_filename}{The file name of a salmon output file of normalised expression values}
+
+\item{TPM_expression_threshold}{Transcripts with lower relative abundance than this threshold are removed}
 }
 \value{
 A tibble of context++ scores filtered by a given TPM threshold

@@ -4,12 +4,15 @@
 \alias{filter_miRanda_scores}
 \title{Filter miRanda scores by the normalised expression values of putative target transcripts within a given biological context}
 \usage{
-filter_miRanda_scores(miRanda_scores_filename, expression_values_filename)
+filter_miRanda_scores(miRanda_scores_filename, expression_values_filename,
+  TPM_expression_threshold)
 }
 \arguments{
 \item{miRanda_scores_filename}{The file name of a miRanda results file}
 
 \item{expression_values_filename}{The file name of a salmon output file of normalised expression values}
+
+\item{TPM_expression_threshold}{Transcripts with lower relative abundance than this threshold are removed}
 }
 \value{
 A tibble of miRanda scores filtered by a given TPM threshold
