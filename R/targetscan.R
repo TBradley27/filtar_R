@@ -411,10 +411,10 @@ filter_contextpp_scores = function (contextpp_scores_filename, expression_values
 
 filter_miRanda_scores = function (miRanda_scores_filename, expression_values_filename, TPM_expression_threshold) {
         
-        miRanda_scores = readr::read_tsv(miRanda_scores_filename, col_names=FALSE)
+        miRanda_scores = readr::read_tsv(miRanda_scores_filename, col_names=TRUE)
         expression_values = readr::read_tsv(expression_values_filename, col_names=TRUE)
                 
-        merged_dataset = merge(miRanda_scores, expression_values, by.x='X2', by.y='Name')
+        merged_dataset = merge(miRanda_scores, expression_values, by.x='transcript_ID', by.y='Name')
         
         filtered_merged_dataset = dplyr::filter(merged_dataset, TPM >= TPM_expression_threshold)
 
